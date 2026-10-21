@@ -277,8 +277,10 @@ footer a { color: var(--muted); }
             <button data-tilt="-1"><span data-i18n="tilt_up">Tilt ↗</span></button>
             <button data-tilt="0" class="active"><span data-i18n="tilt_flat">Flat</span></button>
             <button data-tilt="1"><span data-i18n="tilt_down">Tilt ↘</span></button>
+            <button data-diag="1"><span data-i18n="tilt_diag">Diagonal</span></button>
           </div>
         </div>
+
         <h3 data-i18n="layer_color">Layer Colors</h3>
         <div class="seg-label" data-i18n="direction">Direction</div>
         <div class="mode-toggle seg" id="dirSeg">
@@ -360,13 +362,13 @@ const SIZES = {
 // ================= I18N =================
 const I18N = {
   id: { pattern: 'Pola', palette: 'Palet', mode: 'Mode Wallpaper', size: 'Ukuran', light: 'Terang', dark: 'Gelap',
-        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘',
+        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘', tilt_diag: 'Diagonal',
         layer_color: 'Warna Layer', direction: 'Arah', dir_fwd: 'Terang → Gelap', dir_rev: 'Gelap → Terang',
         contrast: 'Kontras', soft: 'Halus', normal: 'Normal', bold: 'Tegas',
         use_custom: 'Pakai custom', shuffle: 'Acak', download: 'Unduh PNG',
         footer: 'Gratis selamanya · Tanpa akun · 100% di browser' },
   en: { pattern: 'Pattern', palette: 'Palette', mode: 'Wallpaper Mode', size: 'Size', light: 'Light', dark: 'Dark',
-        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘',
+        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘', tilt_diag: 'Diagonal',
         layer_color: 'Layer Colors', direction: 'Direction', dir_fwd: 'Light → Dark', dir_rev: 'Dark → Light',
         contrast: 'Contrast', soft: 'Soft', normal: 'Normal', bold: 'Bold',
         use_custom: 'Use custom', shuffle: 'Shuffle', download: 'Download PNG',
@@ -396,7 +398,9 @@ let state = {
   layerSpread: 'normal', // layer colour contrast: soft | normal | bold
   wavesLayers: 8,       // layer counts, user-controlled per pattern
   hillsLayers: 5,
-  waveTilt: 0           // waves only: -1 tilt up-right, 0 flat, 1 tilt down-right
+  waveTilt: 0,          // waves only: -1 tilt up-right, 0 flat, 1 tilt down-right
+  waveDiag: false,      // waves only: full diagonal corner-to-corner flow
+  waveDiagAng: -0.72    // diagonal angle (rad), calibrated vs the reference look
 };
 
 // seeded RNG (mulberry32)
@@ -504,15 +508,33 @@ function render() {
 function drawWaves(ctx, W, H, c, R) {
   // v2: sine + fBm noise per layer (a pure sine reads as mechanical), opaque
   // fills coloured by a continuous palette ramp instead of alpha over 3 colors.
-  ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
   const ramp = colorRamp(c);
+  if (!state.waveDiag) {
+    ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
+    paintWaves(ctx, W, H, R, ramp, false);
+    return;
+  }
+  // Diagonal flow: the same layered waves painted inside a rotated,
+  // full-coverage frame, so the bands stream from corner to corner.
+  const ang = state.waveDiagAng; // calibrated against the reference look
+  const cos = Math.abs(Math.cos(ang)), sin = Math.abs(Math.sin(ang));
+  const w2 = Math.ceil(W * cos + H * sin), h2 = Math.ceil(W * sin + H * cos);
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.rotate(ang);
+  ctx.translate(-w2 / 2, -h2 / 2);
+  ctx.fillStyle = ramp(layerPos(0)); ctx.fillRect(0, 0, w2, h2);
+  paintWaves(ctx, w2, h2, R, ramp, true);
+  ctx.restore();
+}
+function paintWaves(ctx, W, H, R, ramp, full) {
   const N = makeNoise(state.seed);
   const portrait = H > W;
   const layers = state.wavesLayers;
   const step = Math.max(2, Math.round(W / 480));
   for (let i = 0; i < layers; i++) {
     const t = layers === 1 ? 1 : i / (layers - 1); // 0 = far, 1 = near
-    const baseY = H * (0.34 + t * 0.58) + (R() - 0.5) * H * 0.03;
+    const baseY = (full ? H * (-0.02 + t * 1.04) : H * (0.34 + t * 0.58)) + (R() - 0.5) * H * 0.03;
     const freq = (1.1 + R() * 1.3) * (portrait ? 0.8 : 1);
     const phase = R() * Math.PI * 2;
     const ampS = H * (0.025 + t * 0.045);
@@ -525,7 +547,7 @@ function drawWaves(ctx, W, H, c, R) {
       const y = baseY
         + Math.sin(nx * Math.PI * 2 * freq + phase) * ampS
         + (N.fbm1(nx * 3 + nOff, 3) - 0.47) * 2 * ampN
-        + (nx - 0.5) * state.waveTilt * H * 0.22; // optional diagonal slant
+        + (full ? 0 : (nx - 0.5) * state.waveTilt * H * 0.22); // flat slant, horizontal mode only
       ctx.lineTo(x, y);
     }
     ctx.lineTo(W + step, H); ctx.closePath();
@@ -711,7 +733,8 @@ document.getElementById('layerRange').oninput = e => {
 };
 document.querySelectorAll('#tiltSeg button').forEach(b => {
   b.onclick = () => {
-    state.waveTilt = +b.dataset.tilt;
+    if (b.dataset.diag) { state.waveDiag = true; }
+    else { state.waveDiag = false; state.waveTilt = +b.dataset.tilt; }
     document.querySelectorAll('#tiltSeg button').forEach(x => x.classList.toggle('active', x === b));
     render();
   };

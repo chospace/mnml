@@ -5,7 +5,7 @@ Generate beautiful minimalist wallpapers for desktop and mobile. Free, no accoun
 ## Features
 
 - **6 patterns**: Waves, Arcs, Hills, Gradient, Scatter, Mesh
-- **Layer controls** (Waves & Hills): layer count slider (Waves 3–14, Hills 3–8), gradient direction (light→dark / dark→light), contrast (soft / normal / bold), plus wave tilt (flat / ↘ / ↗) for Waves
+- **Layer controls** (Waves & Hills): layer count slider (Waves 3–14, Hills 3–8), gradient direction (light→dark / dark→light), contrast (soft / normal / bold), plus wave tilt (flat / ↘ / ↗) and a full Diagonal corner-to-corner flow mode for Waves
 - **8 curated palettes** × light/dark mode
 - **Custom colors**: pick your own 3 colors
 - **6 sizes**: Desktop 4K (3840×2160), QHD (2560×1440), HD (1920×1080), iPhone (1290×2796), Mobile (1080×1920), Square (1080×1080)
