@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0d0d">
+<script>
+  // Apply the saved (or system) app theme before first paint — no flash.
+  // This is the APP theme only; wallpaper light/dark is a separate control.
+  (function () {
+    try {
+      var t = localStorage.getItem('mnml-theme');
+      if (t === null) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : '';
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>mnml — Free Minimalist Wallpaper Generator for Desktop & Mobile</title>
 <meta name="description" content="Create free minimalist wallpapers in your browser: waves, hills, gradient, arcs, scatter & mesh patterns in curated palettes. 4K desktop, iPhone & Android sizes, light & dark, custom colors. No account, no watermark. Buat wallpaper minimalis aesthetic gratis untuk HP & desktop.">
@@ -136,6 +147,14 @@ input[type="color"] { width: 44px; height: 38px; padding: 2px; }
   padding: 0.55rem; cursor: pointer; font-size: 0.85rem; font-weight: 600;
 }
 .mode-toggle button.active { background: var(--text); color: var(--bg); }
+.mode-toggle.seg { margin-bottom: 0.4rem; }
+.mode-toggle.seg button { padding: 0.45rem 0.3rem; font-size: 0.78rem; }
+.seg-label {
+  font-size: 0.65rem; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.08em; margin: 0.55rem 0 0.3rem; font-weight: 600;
+}
+input[type="range"] { flex: 1; accent-color: var(--text); cursor: pointer; }
+#layerCountVal { font-weight: 700; font-size: 0.85rem; min-width: 1.5em; text-align: center; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -222,7 +241,7 @@ footer a { color: var(--muted); }
     <div class="brand">mnml <span>· minimalist wallpapers</span></div>
     <div class="nav-actions">
       <button class="lang-btn" id="langBtn">EN</button>
-      <button class="icon-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg></button>
+      <button class="icon-btn" id="themeBtn" title="App theme (light / dark)"><svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg></button>
     </div>
   </nav>
 
@@ -240,10 +259,38 @@ footer a { color: var(--muted); }
         <button class="btn btn-ghost" id="customBtn" style="margin:0;flex:1;padding:0.55rem" data-i18n="use_custom">Use custom</button>
       </div>
 
-      <h3 data-i18n="mode">Mode</h3>
+      <h3 data-i18n="mode">Wallpaper Mode</h3>
       <div class="mode-toggle">
         <button id="modeLight" class="active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"/></svg> <span data-i18n="light">Light</span></button>
         <button id="modeDark"><svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg> <span data-i18n="dark">Dark</span></button>
+      </div>
+
+      <div id="layerCtl">
+        <h3 data-i18n="layer">Layer</h3>
+        <div class="row">
+          <input type="range" id="layerRange" min="3" max="14" step="1" value="8">
+          <span id="layerCountVal">8</span>
+        </div>
+        <div id="tiltCtl">
+          <div class="seg-label" data-i18n="tilt">Tilt</div>
+          <div class="mode-toggle seg" id="tiltSeg">
+            <button data-tilt="-1"><span data-i18n="tilt_up">Tilt ↗</span></button>
+            <button data-tilt="0" class="active"><span data-i18n="tilt_flat">Flat</span></button>
+            <button data-tilt="1"><span data-i18n="tilt_down">Tilt ↘</span></button>
+          </div>
+        </div>
+        <h3 data-i18n="layer_color">Layer Colors</h3>
+        <div class="seg-label" data-i18n="direction">Direction</div>
+        <div class="mode-toggle seg" id="dirSeg">
+          <button data-dir="fwd" class="active"><span data-i18n="dir_fwd">Light → Dark</span></button>
+          <button data-dir="rev"><span data-i18n="dir_rev">Dark → Light</span></button>
+        </div>
+        <div class="seg-label" data-i18n="contrast">Contrast</div>
+        <div class="mode-toggle seg" id="spreadSeg">
+          <button data-spread="soft"><span data-i18n="soft">Soft</span></button>
+          <button data-spread="normal" class="active"><span data-i18n="normal">Normal</span></button>
+          <button data-spread="bold"><span data-i18n="bold">Bold</span></button>
+        </div>
       </div>
 
       <h3 data-i18n="size">Size</h3>
@@ -312,10 +359,16 @@ const SIZES = {
 
 // ================= I18N =================
 const I18N = {
-  id: { pattern: 'Pola', palette: 'Palet', mode: 'Mode', size: 'Ukuran', light: 'Terang', dark: 'Gelap',
+  id: { pattern: 'Pola', palette: 'Palet', mode: 'Mode Wallpaper', size: 'Ukuran', light: 'Terang', dark: 'Gelap',
+        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘',
+        layer_color: 'Warna Layer', direction: 'Arah', dir_fwd: 'Terang → Gelap', dir_rev: 'Gelap → Terang',
+        contrast: 'Kontras', soft: 'Halus', normal: 'Normal', bold: 'Tegas',
         use_custom: 'Pakai custom', shuffle: 'Acak', download: 'Unduh PNG',
         footer: 'Gratis selamanya · Tanpa akun · 100% di browser' },
-  en: { pattern: 'Pattern', palette: 'Palette', mode: 'Mode', size: 'Size', light: 'Light', dark: 'Dark',
+  en: { pattern: 'Pattern', palette: 'Palette', mode: 'Wallpaper Mode', size: 'Size', light: 'Light', dark: 'Dark',
+        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘',
+        layer_color: 'Layer Colors', direction: 'Direction', dir_fwd: 'Light → Dark', dir_rev: 'Dark → Light',
+        contrast: 'Contrast', soft: 'Soft', normal: 'Normal', bold: 'Bold',
         use_custom: 'Use custom', shuffle: 'Shuffle', download: 'Download PNG',
         footer: 'Free forever · No account · 100% in your browser' },
 };
@@ -339,6 +392,11 @@ let state = {
   size: '1920x1080',
   custom: null,
   seed: Math.floor(Math.random() * 1e9),
+  layerDir: 'fwd',      // layer colour direction (waves/hills): fwd = light far → dark near
+  layerSpread: 'normal', // layer colour contrast: soft | normal | bold
+  wavesLayers: 8,       // layer counts, user-controlled per pattern
+  hillsLayers: 5,
+  waveTilt: 0           // waves only: -1 tilt up-right, 0 flat, 1 tilt down-right
 };
 
 // seeded RNG (mulberry32)
@@ -373,6 +431,15 @@ function colorRamp(c) {
     const a = stops[i], b = stops[i + 1];
     return 'rgb(' + Math.round(a[0] + (b[0] - a[0]) * f) + ',' + Math.round(a[1] + (b[1] - a[1]) * f) + ',' + Math.round(a[2] + (b[2] - a[2]) * f) + ')';
   };
+}
+
+// Map a layer's depth t (0 = far, 1 = near) to a position on the colour ramp,
+// honouring the user's layer-colour direction and contrast (waves/hills only).
+function layerPos(t) {
+  const span = { soft: 0.45, normal: 0.84, bold: 1 }[state.layerSpread];
+  let pos = 0.5 + (t - 0.5) * span;
+  if (state.layerDir === 'rev') pos = 1 - pos;
+  return pos;
 }
 
 // Seeded value noise + fBm (fractal Brownian motion). Smooth organic variation
@@ -426,6 +493,7 @@ function render() {
   const colors = currentColors();
   const R = rng(state.seed);
   PATTERN_FNS()[state.pattern](ctx, pW, pH, colors, R);
+  updateLayerCtl();
   // meta
   const pName = PATTERNS.find(p => p.id === state.pattern).name[lang] || PATTERNS.find(p => p.id === state.pattern).name.en;
   document.getElementById('mPattern').textContent = pName;
@@ -440,7 +508,7 @@ function drawWaves(ctx, W, H, c, R) {
   const ramp = colorRamp(c);
   const N = makeNoise(state.seed);
   const portrait = H > W;
-  const layers = 7 + Math.floor(R() * 4); // 7-10
+  const layers = state.wavesLayers;
   const step = Math.max(2, Math.round(W / 480));
   for (let i = 0; i < layers; i++) {
     const t = layers === 1 ? 1 : i / (layers - 1); // 0 = far, 1 = near
@@ -456,11 +524,12 @@ function drawWaves(ctx, W, H, c, R) {
       const nx = x / W;
       const y = baseY
         + Math.sin(nx * Math.PI * 2 * freq + phase) * ampS
-        + (N.fbm1(nx * 3 + nOff, 3) - 0.47) * 2 * ampN;
+        + (N.fbm1(nx * 3 + nOff, 3) - 0.47) * 2 * ampN
+        + (nx - 0.5) * state.waveTilt * H * 0.22; // optional diagonal slant
       ctx.lineTo(x, y);
     }
     ctx.lineTo(W + step, H); ctx.closePath();
-    ctx.fillStyle = ramp(0.1 + t * 0.9);
+    ctx.fillStyle = ramp(layerPos(t));
     ctx.fill();
   }
 }
@@ -503,7 +572,7 @@ function drawHills(ctx, W, H, c, R) {
   ctx.fillStyle = c[3]; ctx.globalAlpha = 0.9; ctx.fill(); ctx.globalAlpha = 1;
   const N = makeNoise(state.seed);
   const portrait = H > W;
-  const layers = 5;
+  const layers = state.hillsLayers;
   // coarse geometry step: the polyline itself filters sub-step noise detail,
   // which keeps ridges bold instead of fuzzy
   const step = Math.max(4, Math.round(W / 120));
@@ -526,7 +595,7 @@ function drawHills(ctx, W, H, c, R) {
       ctx.lineTo(x, y);
     }
     ctx.lineTo(W + step, H); ctx.closePath();
-    ctx.fillStyle = ramp(t * 0.85 + 0.1);
+    ctx.fillStyle = ramp(layerPos(t));
     ctx.fill();
   }
 }
@@ -623,14 +692,52 @@ function renderPaletteGrid() {
 }
 
 // events
+// Layer controls (waves/hills only — the block hides for other patterns;
+// the tilt row is waves-only). Also syncs the layer-count slider per pattern.
+function updateLayerCtl() {
+  const isWaves = state.pattern === 'waves', isHills = state.pattern === 'hills';
+  document.getElementById('layerCtl').style.display = (isWaves || isHills) ? '' : 'none';
+  document.getElementById('tiltCtl').style.display = isWaves ? '' : 'none';
+  const range = document.getElementById('layerRange');
+  if (isWaves) { range.min = 3; range.max = 14; range.value = state.wavesLayers; }
+  if (isHills) { range.min = 3; range.max = 8; range.value = state.hillsLayers; }
+  document.getElementById('layerCountVal').textContent = range.value;
+}
+document.getElementById('layerRange').oninput = e => {
+  const v = +e.target.value;
+  if (state.pattern === 'waves') state.wavesLayers = v; else state.hillsLayers = v;
+  document.getElementById('layerCountVal').textContent = v;
+  render();
+};
+document.querySelectorAll('#tiltSeg button').forEach(b => {
+  b.onclick = () => {
+    state.waveTilt = +b.dataset.tilt;
+    document.querySelectorAll('#tiltSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
+document.querySelectorAll('#dirSeg button').forEach(b => {
+  b.onclick = () => {
+    state.layerDir = b.dataset.dir;
+    document.querySelectorAll('#dirSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render(); // same seed: only the colours move
+  };
+});
+document.querySelectorAll('#spreadSeg button').forEach(b => {
+  b.onclick = () => {
+    state.layerSpread = b.dataset.spread;
+    document.querySelectorAll('#spreadSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
 document.getElementById('modeLight').onclick = () => setMode('light');
 document.getElementById('modeDark').onclick = () => setMode('dark');
 function setMode(m) {
+  // Wallpaper light/dark ONLY: picks the palette variant for the wallpaper.
+  // It never touches the app theme — that belongs to the nav toggle.
   state.mode = m;
   document.getElementById('modeLight').classList.toggle('active', m === 'light');
   document.getElementById('modeDark').classList.toggle('active', m === 'dark');
-  document.documentElement.setAttribute('data-theme', m === 'dark' ? 'dark' : '');
-  // keep wallpaper palette mode in sync? No — wallpaper mode is independent. Just re-render swatches.
   renderPaletteGrid(); render();
 }
 document.getElementById('sizeSel').onchange = e => { state.size = e.target.value; render(); };
@@ -675,12 +782,21 @@ function setThemeIcon() {
   const dark = document.documentElement.getAttribute('data-theme') === 'dark';
   document.getElementById('themeBtn').innerHTML = dark ? ICON_SUN : ICON_MOON;
 }
-document.getElementById('themeBtn').onclick = () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? '' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
+// App theme ONLY (the whole page chrome). The wallpaper's own light/dark
+// mode lives in the panel and never comes through here.
+function applyUiTheme(theme, save) {
+  document.documentElement.setAttribute('data-theme', theme);
   setThemeIcon();
-  localStorage.setItem('mnml-theme', next);
+  if (save) localStorage.setItem('mnml-theme', theme);
+  // keep the mobile browser chrome colour in step with the app theme
+  document.querySelectorAll('meta[name="theme-color"][media]').forEach(m => m.remove());
+  let m = document.querySelector('meta[name="theme-color"]:not([media])');
+  if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
+  m.content = theme === 'dark' ? '#0d0d0d' : '#fafafa';
+}
+document.getElementById('themeBtn').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? '' : 'dark';
+  applyUiTheme(next, true);
 };
 document.getElementById('langBtn').onclick = () => {
   lang = lang === 'id' ? 'en' : 'id';
@@ -695,9 +811,9 @@ document.getElementById('langBtn').onclick = () => {
     state.size = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '1290x2796' : '1080x1920';
     document.getElementById('sizeSel').value = state.size;
   }
-  const savedTheme = localStorage.getItem('mnml-theme') || '';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  setThemeIcon();
+  // App theme was already applied pre-paint by the head script (saved choice,
+  // or the system preference on first visit) — just sync icon + chrome colour.
+  applyUiTheme(document.documentElement.getAttribute('data-theme') || '', false);
   applyLang();
   renderPaletteGrid();
   render();
