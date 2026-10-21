@@ -4,7 +4,7 @@ Generate beautiful minimalist wallpapers for desktop and mobile. Free, no accoun
 
 ## Features
 
-- **6 patterns**: Waves, Arcs, Hills, Gradient, Dots, Mesh
+- **6 patterns**: Waves, Arcs, Hills, Gradient, Scatter, Mesh
 - **8 curated palettes** × light/dark mode
 - **Custom colors**: pick your own 3 colors
 - **6 sizes**: Desktop 4K (3840×2160), QHD (2560×1440), HD (1920×1080), iPhone (1290×2796), Mobile (1080×1920), Square (1080×1080)
@@ -16,6 +16,8 @@ Generate beautiful minimalist wallpapers for desktop and mobile. Free, no accoun
 ## Tech
 
 Single `index.html` — vanilla JS + Canvas API. No build, no dependencies, no backend.
+
+Mobile-optimized: preview renders are capped at 1280px on the long side (downloads re-render the identical seed at full resolution), phone visitors default to a phone size (1080×1920 / iPhone 1290×2796), and layered patterns keep the top of the frame calm for lock-screen clocks.
 
 ## Deploy
 

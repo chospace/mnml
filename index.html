@@ -3,9 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0d0d">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>mnml — Minimalist Wallpaper Generator</title>
-<meta name="description" content="Generate beautiful minimalist wallpapers. 4K desktop & mobile, light & dark, custom palettes. Free, no account, 100% in your browser.">
+<title>mnml — Free Minimalist Wallpaper Generator for Desktop & Mobile</title>
+<meta name="description" content="Create free minimalist wallpapers in your browser: waves, hills, gradient, arcs, scatter & mesh patterns in curated palettes. 4K desktop, iPhone & Android sizes, light & dark, custom colors. No account, no watermark. Buat wallpaper minimalis aesthetic gratis untuk HP & desktop.">
+<meta name="keywords" content="minimalist wallpaper, wallpaper minimalis, aesthetic wallpaper, wallpaper aesthetic, minimalist wallpaper generator, free wallpaper maker, 4k minimalist wallpaper, iphone wallpaper, android wallpaper, waves wallpaper, hills wallpaper, gradient wallpaper, buat wallpaper sendiri">
+<meta name="robots" content="index, follow">
+<meta name="author" content="chospace">
+<link rel="canonical" href="https://chospace.github.io/mnml/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="mnml">
+<meta property="og:title" content="mnml — Free Minimalist Wallpaper Generator">
+<meta property="og:description" content="Generate clean, minimalist wallpapers for desktop & mobile. 6 patterns, curated palettes, custom colors, up to 4K. Free, no account, 100% in your browser.">
+<meta property="og:url" content="https://chospace.github.io/mnml/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="id_ID">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mnml — Free Minimalist Wallpaper Generator">
+<meta name="twitter:description" content="Clean minimalist wallpapers for desktop & mobile — waves, hills, gradient, arcs, scatter, mesh. Free, no watermark, up to 4K.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "mnml — Minimalist Wallpaper Generator",
+  "url": "https://chospace.github.io/mnml/",
+  "description": "Free online minimalist wallpaper generator. Create aesthetic wallpapers for desktop and mobile with waves, hills, gradient, arcs, scatter and mesh patterns, curated palettes and custom colors, up to 4K resolution.",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any (web browser)",
+  "browserRequirements": "Requires JavaScript",
+  "inLanguage": ["en", "id"],
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "chospace", "url": "https://chospace.github.io" },
+  "featureList": "6 minimalist patterns (Waves, Arcs, Hills, Gradient, Scatter, Mesh); 8 curated palettes in light and dark; custom color picker; 6 sizes up to 4K (3840×2160) including iPhone 1290×2796 and mobile 1080×1920; shuffle variations; full-resolution PNG download; works 100% in the browser"
+}
+</script>
 <style>
 :root {
   --bg: #fafafa; --surface: #ffffff; --text: #111111; --muted: #888888;
@@ -66,9 +99,18 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
   transition: border-color 0.15s, transform 0.15s;
 }
-.pattern-btn .p-icon { font-size: 1.3rem; }
+.pattern-btn .p-icon { display: flex; }
+.pattern-btn .p-icon svg, .icon-btn svg, .btn svg, .mode-toggle svg {
+  stroke: currentColor; fill: none; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round; flex: none;
+}
+.pattern-btn .p-icon svg { width: 22px; height: 22px; }
+.icon-btn svg { width: 18px; height: 18px; }
+.btn svg { width: 16px; height: 16px; }
+.mode-toggle svg { width: 14px; height: 14px; }
+.mode-toggle button { display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
 .pattern-btn:hover { border-color: var(--text); }
-.pattern-btn.active { border-color: var(--text); border-width: 2px; background: var(--surface); }
+.pattern-btn.active { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); background: var(--surface); }
 
 .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
 .palette-btn {
@@ -121,7 +163,7 @@ input[type="color"] { width: 44px; height: 38px; padding: 2px; }
 }
 canvas#wp {
   max-width: 100%; max-height: 62vh; border-radius: 6px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
 }
 .meta {
   margin-top: 1rem; font-size: 0.8rem; color: var(--muted);
@@ -135,7 +177,7 @@ canvas#wp {
   .panel { position: static; order: 2; }
   .preview-wrap { order: 1; padding: 1rem; }
   .canvas-holder { padding: 0.5rem; min-height: 220px; }
-  canvas#wp { max-height: 50vh; }
+  canvas#wp { max-height: 68vh; }
 }
 @media (max-width: 480px) {
   .wrap { padding: 1rem 0.75rem; }
@@ -153,6 +195,17 @@ canvas#wp {
   .nav { padding: 0.75rem 0; }
 }
 
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.about { margin-top: 2.5rem; text-align: center; }
+.about h2 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+.about p {
+  color: var(--muted); font-size: 0.82rem; line-height: 1.65;
+  max-width: 640px; margin: 0 auto;
+}
+
 /* Footer */
 footer {
   margin-top: 3rem; padding: 1.5rem 0; border-top: 1px solid var(--border);
@@ -163,12 +216,13 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="wrap">
+  <h1 class="sr-only">mnml — Free Minimalist Wallpaper Generator for Desktop & Mobile</h1>
 
   <nav class="nav">
     <div class="brand">mnml <span>· minimalist wallpapers</span></div>
     <div class="nav-actions">
       <button class="lang-btn" id="langBtn">EN</button>
-      <button class="icon-btn" id="themeBtn" title="Toggle theme">🌙</button>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg></button>
     </div>
   </nav>
 
@@ -188,8 +242,8 @@ footer a { color: var(--muted); }
 
       <h3 data-i18n="mode">Mode</h3>
       <div class="mode-toggle">
-        <button id="modeLight" class="active">☀️ <span data-i18n="light">Light</span></button>
-        <button id="modeDark">🌙 <span data-i18n="dark">Dark</span></button>
+        <button id="modeLight" class="active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"/></svg> <span data-i18n="light">Light</span></button>
+        <button id="modeDark"><svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg> <span data-i18n="dark">Dark</span></button>
       </div>
 
       <h3 data-i18n="size">Size</h3>
@@ -202,13 +256,13 @@ footer a { color: var(--muted); }
         <option value="1080x1080">Square — 1080 × 1080</option>
       </select>
 
-      <button class="btn btn-ghost" id="shuffleBtn">🎲 <span data-i18n="shuffle">Shuffle</span></button>
-      <button class="btn btn-primary" id="dlBtn">⬇ <span data-i18n="download">Download PNG</span></button>
+      <button class="btn btn-ghost" id="shuffleBtn"><svg viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg> <span data-i18n="shuffle">Shuffle</span></button>
+      <button class="btn btn-primary" id="dlBtn"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13A1.5 1.5 0 0 0 20 19.5V17"/></svg> <span data-i18n="download">Download PNG</span></button>
     </aside>
 
     <div class="preview-wrap">
       <div class="canvas-holder">
-        <canvas id="wp" width="1920" height="1080"></canvas>
+        <canvas id="wp" width="1920" height="1080" role="img" aria-label="Preview of your generated minimalist wallpaper"></canvas>
       </div>
       <div class="meta">
         <span><b id="mPattern">Waves</b></span>
@@ -217,6 +271,11 @@ footer a { color: var(--muted); }
       </div>
     </div>
   </div>
+
+  <section class="about">
+    <h2>Free minimalist wallpaper generator</h2>
+    <p>mnml creates clean, aesthetic wallpapers entirely in your browser — nothing is uploaded. Choose from six minimalist patterns (waves, arcs, hills, gradient, scatter and mesh), pair them with a curated palette or your own colors, and download a full-resolution PNG for desktop up to 4K, iPhone or Android. No account, no watermark. Buat wallpaper minimalis untuk HP dan desktop, gratis, langsung dari browser.</p>
+  </section>
 
   <footer>
     <span data-i18n="footer">Free forever · No account · 100% in your browser</span> — mnml by <a href="https://chospace.github.io">chospace</a>
@@ -238,12 +297,12 @@ const PALETTES = [
 ];
 
 const PATTERNS = [
-  { id: 'waves', icon: '〰️', name: { id: 'Waves', en: 'Waves' } },
-  { id: 'arcs', icon: '◎', name: { id: 'Arcs', en: 'Arcs' } },
-  { id: 'hills', icon: '⛰️', name: { id: 'Hills', en: 'Hills' } },
-  { id: 'gradient', icon: '🌅', name: { id: 'Gradient', en: 'Gradient' } },
-  { id: 'dots', icon: '⚫', name: { id: 'Dots', en: 'Dots' } },
-  { id: 'mesh', icon: '🎨', name: { id: 'Mesh', en: 'Mesh' } },
+  { id: 'waves', icon: '<svg viewBox="0 0 24 24"><path d="M2 8.5c2.5 0 2.5 3 5 3s2.5-3 5-3 2.5 3 5 3 2.5-3 5-3"/><path d="M2 14.5c2.5 0 2.5 3 5 3s2.5-3 5-3 2.5 3 5 3 2.5-3 5-3"/></svg>', name: { id: 'Waves', en: 'Waves' } },
+  { id: 'arcs', icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>', name: { id: 'Arcs', en: 'Arcs' } },
+  { id: 'hills', icon: '<svg viewBox="0 0 24 24"><path d="M3 19 9.5 8l4 5.5L16 10.5l5 8.5Z"/><circle cx="17.5" cy="5.5" r="1.8"/></svg>', name: { id: 'Hills', en: 'Hills' } },
+  { id: 'gradient', icon: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9.3h16M4 14.6h16"/></svg>', name: { id: 'Gradient', en: 'Gradient' } },
+  { id: 'scatter', icon: '<svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="17.5" cy="9" r="1.8" fill="currentColor" stroke="none"/><circle cx="8.5" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="20" cy="14" r="0.9" fill="currentColor" stroke="none"/><circle cx="11" cy="19.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="4.8" cy="18" r="0.8" fill="currentColor" stroke="none"/></svg>', name: { id: 'Scatter', en: 'Scatter' } },
+  { id: 'mesh', icon: '<svg viewBox="0 0 24 24"><circle cx="9.5" cy="10" r="5.5"/><circle cx="15" cy="14.5" r="5"/></svg>', name: { id: 'Mesh', en: 'Mesh' } },
 ];
 
 const SIZES = {
@@ -299,16 +358,74 @@ function currentColors() {
   return p[state.mode];
 }
 
+// ================= COLOR RAMP + NOISE (v2) =================
+// Interpolate smoothly across the palette instead of cycling discrete colors,
+// so layered patterns get a continuous depth ramp (far = light, near = dark).
+function hexRgb(hex) {
+  return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+}
+function colorRamp(c) {
+  const stops = [c[1], c[2], c[3]].map(hexRgb);
+  return function(t) {
+    t = Math.min(1, Math.max(0, t)) * (stops.length - 1);
+    const i = Math.min(stops.length - 2, Math.floor(t));
+    const f = t - i;
+    const a = stops[i], b = stops[i + 1];
+    return 'rgb(' + Math.round(a[0] + (b[0] - a[0]) * f) + ',' + Math.round(a[1] + (b[1] - a[1]) * f) + ',' + Math.round(a[2] + (b[2] - a[2]) * f) + ')';
+  };
+}
+
+// Seeded value noise + fBm (fractal Brownian motion). Smooth organic variation
+// at several scales at once — replaces the pure sine / random-peak curves of v1.
+function makeNoise(seed) {
+  const s = seed % 100000;
+  function hash1(ix) {
+    const v = Math.sin(ix * 127.1 + s * 0.913) * 43758.5453;
+    return v - Math.floor(v);
+  }
+  function hash2(ix, iy) {
+    const v = Math.sin(ix * 127.1 + iy * 311.7 + s * 0.717) * 43758.5453;
+    return v - Math.floor(v);
+  }
+  function smooth(t) { return t * t * (3 - 2 * t); }
+  function noise1(x) {
+    const ix = Math.floor(x), fx = x - ix;
+    return hash1(ix) + (hash1(ix + 1) - hash1(ix)) * smooth(fx);
+  }
+  function noise2(x, y) {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+    const a = hash2(ix, iy), b = hash2(ix + 1, iy), cc = hash2(ix, iy + 1), d = hash2(ix + 1, iy + 1);
+    const u = smooth(fx), v = smooth(fy);
+    return a + (b - a) * u + (cc - a) * v + (a - b - cc + d) * u * v;
+  }
+  function fbm1(x, oct) {
+    let val = 0, amp = 0.5, f = 1;
+    for (let i = 0; i < oct; i++) { val += amp * noise1(x * f); amp *= 0.5; f *= 2.1; }
+    return val; // ~0..0.97, centred near 0.47
+  }
+  function fbm2(x, y, oct) {
+    let val = 0, amp = 0.5, f = 1;
+    for (let i = 0; i < oct; i++) { val += amp * noise2(x * f, y * f); amp *= 0.5; f *= 2.03; }
+    return val;
+  }
+  return { noise1, noise2, fbm1, fbm2 };
+}
+
 // ================= RENDERERS =================
+const PATTERN_FNS = () => ({ waves: drawWaves, arcs: drawArcs, hills: drawHills, gradient: drawGradient, scatter: drawScatter, mesh: drawMesh });
 function render() {
   const [W, H] = SIZES[state.size];
   const cv = document.getElementById('wp');
-  cv.width = W; cv.height = H;
+  // Preview is capped (long side 1280px) so shuffling stays instant and light
+  // on phone GPUs/memory — patterns are seed-deterministic, so Download can
+  // re-render the identical image at full resolution on demand.
+  const scale = Math.min(1, 1280 / Math.max(W, H));
+  const pW = Math.round(W * scale), pH = Math.round(H * scale);
+  cv.width = pW; cv.height = pH;
   const ctx = cv.getContext('2d');
   const colors = currentColors();
   const R = rng(state.seed);
-  const fn = { waves: drawWaves, arcs: drawArcs, hills: drawHills, gradient: drawGradient, dots: drawDots, mesh: drawMesh }[state.pattern];
-  fn(ctx, W, H, colors, R);
+  PATTERN_FNS()[state.pattern](ctx, pW, pH, colors, R);
   // meta
   const pName = PATTERNS.find(p => p.id === state.pattern).name[lang] || PATTERNS.find(p => p.id === state.pattern).name.en;
   document.getElementById('mPattern').textContent = pName;
@@ -317,27 +434,35 @@ function render() {
 }
 
 function drawWaves(ctx, W, H, c, R) {
+  // v2: sine + fBm noise per layer (a pure sine reads as mechanical), opaque
+  // fills coloured by a continuous palette ramp instead of alpha over 3 colors.
   ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
-  const layers = 4 + Math.floor(R() * 3);
-  const ampBase = H * (0.06 + R() * 0.08);
-  const yBase = H * (0.3 + R() * 0.4);
-  const phase = R() * Math.PI * 2;
+  const ramp = colorRamp(c);
+  const N = makeNoise(state.seed);
+  const portrait = H > W;
+  const layers = 7 + Math.floor(R() * 4); // 7-10
+  const step = Math.max(2, Math.round(W / 480));
   for (let i = 0; i < layers; i++) {
-    const yOff = yBase + (i - layers / 2) * H * 0.09;
-    const amp = ampBase * (0.7 + R() * 0.6);
-    const freq = (1.2 + R() * 1.8) * Math.PI * 2 / W;
+    const t = layers === 1 ? 1 : i / (layers - 1); // 0 = far, 1 = near
+    const baseY = H * (0.34 + t * 0.58) + (R() - 0.5) * H * 0.03;
+    const freq = (1.1 + R() * 1.3) * (portrait ? 0.8 : 1);
+    const phase = R() * Math.PI * 2;
+    const ampS = H * (0.025 + t * 0.045);
+    const ampN = H * (0.02 + t * 0.05);
+    const nOff = R() * 100;
     ctx.beginPath();
-    ctx.moveTo(0, H);
-    for (let x = 0; x <= W; x += 8) {
-      const y = yOff + Math.sin(x * freq + phase + i * 0.7) * amp;
+    ctx.moveTo(-step, H);
+    for (let x = 0; x <= W + step; x += step) {
+      const nx = x / W;
+      const y = baseY
+        + Math.sin(nx * Math.PI * 2 * freq + phase) * ampS
+        + (N.fbm1(nx * 3 + nOff, 3) - 0.47) * 2 * ampN;
       ctx.lineTo(x, y);
     }
-    ctx.lineTo(W, H); ctx.closePath();
-    ctx.fillStyle = c[1 + (i % 3)];
-    ctx.globalAlpha = 0.55 + (i / layers) * 0.45;
+    ctx.lineTo(W + step, H); ctx.closePath();
+    ctx.fillStyle = ramp(0.1 + t * 0.9);
     ctx.fill();
   }
-  ctx.globalAlpha = 1;
 }
 
 function drawArcs(ctx, W, H, c, R) {
@@ -362,36 +487,48 @@ function drawArcs(ctx, W, H, c, R) {
 }
 
 function drawHills(ctx, W, H, c, R) {
+  // v2: ridgelines are pure fBm noise (detail at every scale) instead of
+  // quadratic curves through 2-4 random peaks. Back layers get more octaves
+  // and amplitude (mountains), front layers fewer (rolling hills).
   ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
   // subtle sky gradient
+  const ramp = colorRamp(c);
   const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, c[0]); g.addColorStop(1, c[1]);
+  g.addColorStop(0, c[0]); g.addColorStop(1, ramp(0.12));
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  const layers = 3 + Math.floor(R() * 3);
-  for (let i = 0; i < layers; i++) {
-    const yBase = H * (0.35 + (i / layers) * 0.55);
-    ctx.beginPath(); ctx.moveTo(0, H);
-    const peaks = 2 + Math.floor(R() * 3);
-    let x = 0;
-    ctx.lineTo(0, yBase + (R() - 0.5) * H * 0.1);
-    for (let p = 0; p < peaks; p++) {
-      const px = (p + 0.5 + R() * 0.4) / peaks * W;
-      const py = yBase - R() * H * 0.22;
-      const nx = (p + 1) / peaks * W;
-      const ny = yBase + (R() - 0.5) * H * 0.08;
-      ctx.quadraticCurveTo(px, py, nx, ny);
-    }
-    ctx.lineTo(W, H); ctx.closePath();
-    ctx.fillStyle = c[1 + (i % 3)];
-    ctx.globalAlpha = 0.5 + (i / layers) * 0.5;
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-  // sun/moon
-  const sx = W * (0.15 + R() * 0.7), sy = H * (0.12 + R() * 0.2);
+  // sun/moon — drawn before the hills so a ridge can overlap it
+  const sx = W * (0.15 + R() * 0.7), sy = H * (0.1 + R() * 0.18);
   const sr = Math.min(W, H) * (0.04 + R() * 0.03);
   ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2);
   ctx.fillStyle = c[3]; ctx.globalAlpha = 0.9; ctx.fill(); ctx.globalAlpha = 1;
+  const N = makeNoise(state.seed);
+  const portrait = H > W;
+  const layers = 5;
+  // coarse geometry step: the polyline itself filters sub-step noise detail,
+  // which keeps ridges bold instead of fuzzy
+  const step = Math.max(4, Math.round(W / 120));
+  for (let i = 0; i < layers; i++) {
+    const t = (i + 1) / layers;
+    const back = i < 2;
+    const baseY = H * (0.5 + (i / layers) * (portrait ? 0.33 : 0.4));
+    // the ridge hangs below its baseline by the full fBm range, lifted back
+    // up a little — peaks (low fBm) poke above the baseline, valleys dip
+    // below it, and that asymmetry is what reads as a mountain range
+    const amp = H * (portrait ? (back ? 0.13 : 0.07) : (back ? 0.32 : 0.16)) * (0.85 + R() * 0.3);
+    const lift = H * (back ? 0.12 : 0.01) * (portrait ? 0.45 : 1);
+    const freq = (back ? 4.5 : 2.5) * (portrait ? 0.6 : 1);
+    const oct = back ? 10 : 8;
+    const nOff = i * 4.3 + R() * 20;
+    ctx.beginPath();
+    ctx.moveTo(-step, H);
+    for (let x = 0; x <= W + step; x += step) {
+      const y = baseY + N.fbm1((x / W) * freq + nOff, oct) * amp - lift;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W + step, H); ctx.closePath();
+    ctx.fillStyle = ramp(t * 0.85 + 0.1);
+    ctx.fill();
+  }
 }
 
 function drawGradient(ctx, W, H, c, R) {
@@ -409,22 +546,26 @@ function drawGradient(ctx, W, H, c, R) {
   ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
 }
 
-function drawDots(ctx, W, H, c, R) {
+function drawScatter(ctx, W, H, c, R) {
+  // v2 (replaces Dots, Cho's pick 2026-10-21): free scatter — no grid at all.
+  // One "depth" value per dot drives radius, brightness and ramp colour
+  // together, so dots feel like they sit at different distances; the top
+  // few percent get a soft halo. Reads as a calm starfield.
   ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
-  const cols = 12 + Math.floor(R() * 10), rows = Math.round(cols * H / W);
-  const dx = W / cols, dy = H / rows;
-  const maxR = Math.min(dx, dy) * 0.42;
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      // wave-based size variation for organic feel
-      const wave = 0.5 + 0.5 * Math.sin(i * 0.5 + R() * 0 + j * 0.35);
-      const r = maxR * (0.25 + wave * 0.75);
-      ctx.beginPath();
-      ctx.arc((i + 0.5) * dx, (j + 0.5) * dy, r, 0, Math.PI * 2);
-      ctx.fillStyle = (i + j) % 7 === 0 ? c[3] : c[1 + ((i * 3 + j) % 2)];
-      ctx.globalAlpha = 0.35 + wave * 0.55;
-      ctx.fill();
+  const ramp = colorRamp(c);
+  const count = Math.round(W * H / 6500);
+  const unit = Math.min(W, H) / 540;
+  for (let k = 0; k < count; k++) {
+    const x = R() * W, y = R() * H, depth = R();
+    const r = (0.5 + depth * 2.6) * unit;
+    if (depth > 0.92) {
+      ctx.beginPath(); ctx.arc(x, y, r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = c[3]; ctx.globalAlpha = 0.13; ctx.fill(); ctx.globalAlpha = 1;
     }
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = ramp(0.55 + depth * 0.45);
+    ctx.globalAlpha = 0.3 + depth * 0.7;
+    ctx.fill();
   }
   ctx.globalAlpha = 1;
 }
@@ -513,9 +654,13 @@ document.getElementById('customBtn').onclick = () => {
   };
 });
 document.getElementById('dlBtn').onclick = () => {
-  const cv = document.getElementById('wp');
   const [W, H] = SIZES[state.size];
   const pName = PATTERNS.find(p => p.id === state.pattern).id;
+  // Full-resolution render on an offscreen canvas (same seed = same image
+  // as the capped preview), so downloads stay full quality.
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  PATTERN_FNS()[state.pattern](cv.getContext('2d'), W, H, currentColors(), rng(state.seed));
   cv.toBlob(blob => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -524,11 +669,17 @@ document.getElementById('dlBtn').onclick = () => {
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }, 'image/png');
 };
+const ICON_SUN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"/></svg>';
+const ICON_MOON = '<svg viewBox="0 0 24 24"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.8 6.8 0 0 0 9.5 9.5Z"/></svg>';
+function setThemeIcon() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('themeBtn').innerHTML = dark ? ICON_SUN : ICON_MOON;
+}
 document.getElementById('themeBtn').onclick = () => {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? '' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+  setThemeIcon();
   localStorage.setItem('mnml-theme', next);
 };
 document.getElementById('langBtn').onclick = () => {
@@ -539,9 +690,14 @@ document.getElementById('langBtn').onclick = () => {
 
 // init
 (function init() {
+  // Phone visitors get a phone wallpaper size by default instead of Desktop HD
+  if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 760) {
+    state.size = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '1290x2796' : '1080x1920';
+    document.getElementById('sizeSel').value = state.size;
+  }
   const savedTheme = localStorage.getItem('mnml-theme') || '';
   document.documentElement.setAttribute('data-theme', savedTheme);
-  document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  setThemeIcon();
   applyLang();
   renderPaletteGrid();
   render();
