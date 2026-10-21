@@ -4,7 +4,7 @@ Generate beautiful minimalist wallpapers for desktop and mobile. Free, no accoun
 
 ## Features
 
-- **6 patterns**: Waves, Arcs, Hills, Gradient, Scatter, Mesh
+- **8 patterns**: Waves, Arcs, Hills, Gradient, Scatter, Mesh, Poly (Delaunay low-poly facets with an adjustable facet-size slider), Dunes (low gradient-shaded ridges under a big empty sky, with four viewpoints (Bottom / Top / Diagonal / Side) and four ridge waveforms (Gentle / Wavy / Sharp / Stepped))
 - **Layer controls** (Waves & Hills): layer count slider (Waves 3–14, Hills 3–8), gradient direction (light→dark / dark→light), contrast (soft / normal / bold), plus wave tilt (flat / ↘ / ↗) and a full Diagonal corner-to-corner flow mode for Waves
 - **8 curated palettes** × light/dark mode
 - **Custom colors**: pick your own 3 colors
