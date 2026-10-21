@@ -26,7 +26,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="mnml">
 <meta property="og:title" content="mnml — Free Minimalist Wallpaper Generator">
-<meta property="og:description" content="Generate clean, minimalist wallpapers for desktop & mobile. 8 patterns, curated palettes, custom colors, up to 4K. Free, no account, 100% in your browser.">
+<meta property="og:description" content="Generate clean, minimalist wallpapers for desktop & mobile. 9 patterns, curated palettes, custom colors, up to 4K. Free, no account, 100% in your browser.">
 <meta property="og:url" content="https://chospace.github.io/mnml/">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="id_ID">
@@ -154,7 +154,7 @@ input[type="color"] { width: 44px; height: 38px; padding: 2px; }
   letter-spacing: 0.08em; margin: 0.55rem 0 0.3rem; font-weight: 600;
 }
 input[type="range"] { flex: 1; accent-color: var(--text); cursor: pointer; }
-#layerCountVal, #facetVal { font-weight: 700; font-size: 0.85rem; min-width: 1.5em; text-align: center; }
+#layerCountVal, #facetVal, #grooveVal { font-weight: 700; font-size: 0.85rem; min-width: 1.5em; text-align: center; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -317,6 +317,22 @@ footer a { color: var(--muted); }
           <button data-shape="ombak"><span data-i18n="shp_ombak">Wavy</span></button>
           <button data-shape="tajam"><span data-i18n="shp_tajam">Sharp</span></button>
           <button data-shape="undak"><span data-i18n="shp_undak">Stepped</span></button>
+          <button data-shape="lembaran"><span data-i18n="shp_lembaran">Sheets</span></button>
+        </div>
+      </div>
+
+      <div id="grooveCtl" style="display:none">
+        <h3 data-i18n="angle">Angle</h3>
+        <div class="mode-toggle seg" id="grooveAngleSeg">
+          <button data-gangle="tegak" class="active"><span data-i18n="grv_tegak">Upright</span></button>
+          <button data-gangle="miring"><span data-i18n="grv_miring">Tilted</span></button>
+          <button data-gangle="datar"><span data-i18n="grv_datar">Flat</span></button>
+          <button data-gangle="miring2"><span data-i18n="grv_miring2">Tilted Flip</span></button>
+        </div>
+        <div class="seg-label" data-i18n="lbl_lines">Lines</div>
+        <div class="row">
+          <input type="range" id="grooveRange" min="4" max="16" step="1" value="8">
+          <span id="grooveVal">8</span>
         </div>
       </div>
 
@@ -368,6 +384,8 @@ const PALETTES = [
   { name: 'Ocean', light: ['#eef6f7', '#bcd9de', '#5b9aa8', '#1d5c6b'], dark: ['#081114', '#14262b', '#1d5c6b', '#5b9aa8'] },
   { name: 'Blush', light: ['#faf0f2', '#f0cdd6', '#d98aa0', '#8c3a54'], dark: ['#150b0e', '#2b161c', '#8c3a54', '#d98aa0'] },
   { name: 'Moss', light: ['#f4f5ee', '#dfe3cf', '#a3b183', '#5a6b3f'], dark: ['#101208', '#20240f', '#5a6b3f', '#a3b183'] },
+  { name: 'Sunset', light: ['#fff1de', '#ffc98a', '#ff7b3d', '#a31226'], dark: ['#1c0714', '#7a0c1e', '#e03a12', '#ff9e2c'] },
+  { name: 'Grape', light: ['#faf0fa', '#eec3ec', '#b45fd0', '#5e1773'], dark: ['#12061f', '#4b116e', '#a03bb0', '#f0a6d8'] },
 ];
 
 const PATTERNS = [
@@ -377,6 +395,7 @@ const PATTERNS = [
   { id: 'gradient', icon: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9.3h16M4 14.6h16"/></svg>', name: { id: 'Gradient', en: 'Gradient' } },
   { id: 'scatter', icon: '<svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="17.5" cy="9" r="1.8" fill="currentColor" stroke="none"/><circle cx="8.5" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="20" cy="14" r="0.9" fill="currentColor" stroke="none"/><circle cx="11" cy="19.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="4.8" cy="18" r="0.8" fill="currentColor" stroke="none"/></svg>', name: { id: 'Scatter', en: 'Scatter' } },
   { id: 'mesh', icon: '<svg viewBox="0 0 24 24"><circle cx="9.5" cy="10" r="5.5"/><circle cx="15" cy="14.5" r="5"/></svg>', name: { id: 'Mesh', en: 'Mesh' } },
+  { id: 'groove', icon: '<svg viewBox="0 0 24 24"><path d="M5 3c2.5 3-2.5 6 0 9s-2.5 6 0 9"/><path d="M12 3c2.5 3-2.5 6 0 9s-2.5 6 0 9"/><path d="M19 3c2.5 3-2.5 6 0 9s-2.5 6 0 9"/></svg>', name: { id: 'Groove', en: 'Groove' } },
   { id: 'poly', icon: '<svg viewBox="0 0 24 24"><path d="M12 4 21 20H3Z"/><path d="M12 4v8.5M3 20l9-7.5L21 20"/></svg>', name: { id: 'Poly', en: 'Poly' } },
   { id: 'dunes', icon: '<svg viewBox="0 0 24 24"><path d="M2 14.5c4-2.2 8-2.2 12 0 3.2 1.8 5.8 1.6 8 .4"/><path d="M2 19.5c5-2 9-2 13 0 3 1.5 5 1.2 7 .2"/></svg>', name: { id: 'Dunes', en: 'Dunes' } },
 ];
@@ -389,13 +408,15 @@ const SIZES = {
 // ================= I18N =================
 const I18N = {
   id: { pattern: 'Pola', palette: 'Palet', mode: 'Mode Wallpaper', size: 'Ukuran', light: 'Terang', dark: 'Gelap',
-        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘', tilt_diag: 'Diagonal', facet: 'Ukuran Faset', angle: 'Sudut', ang_bottom: 'Bawah', ang_top: 'Atas', ang_diag: 'Diagonal', ang_side: 'Samping', shape: 'Gelombang', shp_landai: 'Landai', shp_ombak: 'Ombak', shp_tajam: 'Tajam', shp_undak: 'Undak',
+        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘', tilt_diag: 'Diagonal', facet: 'Ukuran Faset', angle: 'Sudut', ang_bottom: 'Bawah', ang_top: 'Atas', ang_diag: 'Diagonal', ang_side: 'Samping', shape: 'Gelombang', shp_landai: 'Landai', shp_ombak: 'Ombak', shp_tajam: 'Tajam', shp_undak: 'Undak', shp_lembaran: 'Lembaran',
+ grv_tegak: 'Tegak', grv_miring: 'Miring', grv_datar: 'Datar', grv_miring2: 'Miring Balik',
         layer_color: 'Warna Layer', direction: 'Arah', dir_fwd: 'Terang → Gelap', dir_rev: 'Gelap → Terang',
         contrast: 'Kontras', soft: 'Halus', normal: 'Normal', bold: 'Tegas',
         use_custom: 'Pakai custom', shuffle: 'Acak', download: 'Unduh PNG',
         footer: 'Gratis selamanya · Tanpa akun · 100% di browser' },
   en: { pattern: 'Pattern', palette: 'Palette', mode: 'Wallpaper Mode', size: 'Size', light: 'Light', dark: 'Dark',
-        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘', tilt_diag: 'Diagonal', facet: 'Facet Size', angle: 'Angle', ang_bottom: 'Bottom', ang_top: 'Top', ang_diag: 'Diagonal', ang_side: 'Side', shape: 'Waveform', shp_landai: 'Gentle', shp_ombak: 'Wavy', shp_tajam: 'Sharp', shp_undak: 'Stepped',
+        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘', tilt_diag: 'Diagonal', facet: 'Facet Size', angle: 'Angle', ang_bottom: 'Bottom', ang_top: 'Top', ang_diag: 'Diagonal', ang_side: 'Side', shape: 'Waveform', shp_landai: 'Gentle', shp_ombak: 'Wavy', shp_tajam: 'Sharp', shp_undak: 'Stepped', shp_lembaran: 'Sheets',
+ grv_tegak: 'Upright', grv_miring: 'Tilted', grv_datar: 'Flat', grv_miring2: 'Tilted Flip',
         layer_color: 'Layer Colors', direction: 'Direction', dir_fwd: 'Light → Dark', dir_rev: 'Dark → Light',
         contrast: 'Contrast', soft: 'Soft', normal: 'Normal', bold: 'Bold',
         use_custom: 'Use custom', shuffle: 'Shuffle', download: 'Download PNG',
@@ -430,7 +451,9 @@ let state = {
   waveDiagAng: -0.72,   // diagonal angle (rad), calibrated vs the reference look
   polyScale: 1,         // poly only: facet size multiplier (0.5 = fine, 2 = chunky)
   duneAngle: 'bottom',  // dunes only: bottom | top | diag | side viewpoint
-  duneShape: 'landai'   // dunes only: landai | ombak | tajam | undak ridge waveform
+  duneShape: 'landai',  // dunes only: landai | ombak | tajam | undak | lembaran waveform
+  grooveAngle: 'tegak', // groove only: tegak | miring | datar | miring2 frame rotation
+  grooveLines: 8        // groove only: stripe count 4–16
 };
 
 // seeded RNG (mulberry32)
@@ -519,7 +542,7 @@ function makeNoise(seed) {
 }
 
 // ================= RENDERERS =================
-const PATTERN_FNS = () => ({ waves: drawWaves, arcs: drawArcs, hills: drawHills, gradient: drawGradient, scatter: drawScatter, mesh: drawMesh, poly: drawPoly, dunes: drawDunes });
+const PATTERN_FNS = () => ({ waves: drawWaves, arcs: drawArcs, hills: drawHills, gradient: drawGradient, scatter: drawScatter, mesh: drawMesh, poly: drawPoly, dunes: drawDunes, groove: drawGroove });
 function render() {
   const [W, H] = SIZES[state.size];
   const cv = document.getElementById('wp');
@@ -705,6 +728,47 @@ function drawPoly(ctx, W, H, c, R) {
   }
 }
 
+function paintGroove(ctx, W, H, c, R) {
+  // Thick vertical wiggle stripes with a NEAT gradient: tones march in
+  // order across the field. All edges share one wiggle so stripes flow
+  // together; their count comes from the Lines slider.
+  const ramp = colorRamp(c);
+  const bands = state.grooveLines, bw = W / bands, S = 64;
+  const amp = bw * (0.42 + R() * 0.15);
+  const cycles = 5.2 + R() * 1.6;
+  const phase = R() * Math.PI * 2;
+  const lean = -(0.22 + R() * 0.18) * W;
+  const edgeX = (i, y) => i * bw + amp * Math.sin((y / H) * Math.PI * 2 * cycles + phase) + lean * (y / H);
+  ctx.fillStyle = ramp(0.5); ctx.fillRect(0, 0, W, H);
+  const cover = Math.ceil(Math.abs(lean) / bw) + 1;
+  const total = bands + cover * 2;
+  for (let i = -cover; i < bands + cover; i++) {
+    ctx.beginPath();
+    for (let s = 0; s <= S; s++) { const y = (s / S) * (H + 8) - 4; const x = edgeX(i, y); s ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    for (let s = S; s >= 0; s--) { const y = (s / S) * (H + 8) - 4; ctx.lineTo(edgeX(i + 1, y), y); }
+    ctx.closePath();
+    const tone = (i + cover) / (total - 1);
+    ctx.fillStyle = ramp(0.04 + tone * 0.92);
+    ctx.fill();
+  }
+}
+function drawGroove(ctx, W, H, c, R) {
+  // Same rotation trick as Dunes: the stripe field is painted once and the
+  // frame turns it — Tegak (upright) / Datar (90°) / Miring ±0.6 rad.
+  const ang = state.grooveAngle;
+  if (ang === 'tegak') { paintGroove(ctx, W, H, c, R); return; }
+  ctx.save();
+  if (ang === 'datar') {
+    ctx.translate(W / 2, H / 2); ctx.rotate(-Math.PI / 2); ctx.translate(-H / 2, -W / 2);
+    paintGroove(ctx, H, W, c, R);
+  } else {
+    const a = ang === 'miring' ? -0.6 : 0.6, cos = Math.abs(Math.cos(a)), sin = Math.abs(Math.sin(a));
+    const w2 = Math.ceil(W * cos + H * sin), h2 = Math.ceil(W * sin + H * cos);
+    ctx.translate(W / 2, H / 2); ctx.rotate(a); ctx.translate(-w2 / 2, -h2 / 2);
+    paintGroove(ctx, w2, h2, c, R);
+  }
+  ctx.restore();
+}
 function drawDunes(ctx, W, H, c, R) {
   // One dune landscape, four viewpoints: the same seeded scene is painted
   // into a rotated frame, so the seed fixes the landscape and the angle
@@ -732,9 +796,27 @@ function paintDunes(ctx, W, H, c, R) {
   const ramp = colorRamp(c);
   const N = makeNoise(state.seed);
   ctx.fillStyle = c[0]; ctx.fillRect(0, 0, W, H);
-  const layers = 5, step = Math.max(3, Math.round(W / 110));
   const shape = state.duneShape;
+  // Lembaran (sheets): flat slanted sheets instead of ridges — more, thinner
+  // layers, straight tilted edges that cross, solid fills, no gradient
+  const lembaran = shape === 'lembaran';
+  const layers = lembaran ? 7 : 5, step = Math.max(3, Math.round(W / 110));
   for (let i = 0; i < layers; i++) {
+    if (lembaran) {
+      const ti = i / (layers - 1);
+      const yL = H * (0.635 + ti * 0.315) + (R() - 0.5) * H * 0.012;
+      const slope = (R() - 0.42) * H * 0.17;
+      const sag = (R() - 0.5) * H * 0.02;
+      ctx.beginPath(); ctx.moveTo(-step, H);
+      for (let x = 0; x <= W + step; x += step) {
+        const nx = x / W;
+        ctx.lineTo(x, yL + slope * nx + sag * Math.sin(Math.PI * nx));
+      }
+      ctx.lineTo(W + step, H); ctx.closePath();
+      ctx.fillStyle = ramp(0.22 + ti * 0.74);
+      ctx.fill();
+      continue;
+    }
     const t = (i + 1) / layers;
     const baseY = H * (0.58 + (i / layers) * 0.30);
     let amp = H * (0.03 + t * 0.05);
@@ -878,12 +960,25 @@ function updateLayerCtl() {
   document.getElementById('layerCtl').style.display = (isWaves || isHills) ? '' : 'none';
   document.getElementById('polyCtl').style.display = state.pattern === 'poly' ? '' : 'none';
   document.getElementById('duneCtl').style.display = state.pattern === 'dunes' ? '' : 'none';
+  document.getElementById('grooveCtl').style.display = state.pattern === 'groove' ? '' : 'none';
   document.getElementById('tiltCtl').style.display = isWaves ? '' : 'none';
   const range = document.getElementById('layerRange');
   if (isWaves) { range.min = 3; range.max = 14; range.value = state.wavesLayers; }
   if (isHills) { range.min = 3; range.max = 8; range.value = state.hillsLayers; }
   document.getElementById('layerCountVal').textContent = range.value;
 }
+document.querySelectorAll('#grooveAngleSeg button').forEach(b => {
+  b.onclick = () => {
+    state.grooveAngle = b.dataset.gangle;
+    document.querySelectorAll('#grooveAngleSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
+document.getElementById('grooveRange').addEventListener('input', e => {
+  state.grooveLines = +e.target.value;
+  document.getElementById('grooveVal').textContent = e.target.value;
+  render();
+});
 document.querySelectorAll('#shapeSeg button').forEach(b => {
   b.onclick = () => {
     state.duneShape = b.dataset.shape;
