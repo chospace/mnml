@@ -316,7 +316,6 @@ footer a { color: var(--muted); }
           <button data-shape="landai" class="active"><span data-i18n="shp_landai">Gentle</span></button>
           <button data-shape="ombak"><span data-i18n="shp_ombak">Wavy</span></button>
           <button data-shape="tajam"><span data-i18n="shp_tajam">Sharp</span></button>
-          <button data-shape="undak"><span data-i18n="shp_undak">Stepped</span></button>
           <button data-shape="lembaran"><span data-i18n="shp_lembaran">Sheets</span></button>
         </div>
       </div>
@@ -333,6 +332,25 @@ footer a { color: var(--muted); }
         <div class="row">
           <input type="range" id="grooveRange" min="4" max="16" step="1" value="8">
           <span id="grooveVal">8</span>
+        </div>
+        <div class="seg-label" data-i18n="shape">Waveform</div>
+        <div class="mode-toggle seg" id="grooveWaveSeg">
+          <button data-gwave="gelombang" class="active"><span data-i18n="gw_gelombang">Wavy</span></button>
+          <button data-gwave="lurus"><span data-i18n="gw_lurus">Straight</span></button>
+        </div>
+        <div class="seg-label" data-i18n="contrast">Contrast</div>
+        <div class="mode-toggle seg" id="grooveContrastSeg">
+          <button data-gcontrast="soft"><span data-i18n="soft">Soft</span></button>
+          <button data-gcontrast="normal"><span data-i18n="normal">Normal</span></button>
+          <button data-gcontrast="bold" class="active"><span data-i18n="bold">Bold</span></button>
+        </div>
+      </div>
+
+      <div id="gradientCtl" style="display:none">
+        <h3 data-i18n="gstyle">Gradient Style</h3>
+        <div class="mode-toggle seg" id="gradientSeg">
+          <button data-gstyle="halus" class="active"><span data-i18n="gs_halus">Smooth</span></button>
+          <button data-gstyle="acak"><span data-i18n="gs_acak">Smooth Random</span></button>
         </div>
       </div>
 
@@ -386,6 +404,8 @@ const PALETTES = [
   { name: 'Moss', light: ['#f4f5ee', '#dfe3cf', '#a3b183', '#5a6b3f'], dark: ['#101208', '#20240f', '#5a6b3f', '#a3b183'] },
   { name: 'Sunset', light: ['#fff1de', '#ffc98a', '#ff7b3d', '#a31226'], dark: ['#1c0714', '#7a0c1e', '#e03a12', '#ff9e2c'] },
   { name: 'Grape', light: ['#faf0fa', '#eec3ec', '#b45fd0', '#5e1773'], dark: ['#12061f', '#4b116e', '#a03bb0', '#f0a6d8'] },
+  { name: 'Mocha', light: ['#f7ead9', '#dec39a', '#a9743f', '#4a2c14'], dark: ['#170d06', '#3a2312', '#8a5a28', '#e8b878'] },
+  { name: 'Lagoon', light: ['#e6fbf7', '#a5ecdd', '#2ec4b6', '#0b5563'], dark: ['#04141a', '#0b3542', '#12a594', '#7ef0d4'] },
 ];
 
 const PATTERNS = [
@@ -408,15 +428,19 @@ const SIZES = {
 // ================= I18N =================
 const I18N = {
   id: { pattern: 'Pola', palette: 'Palet', mode: 'Mode Wallpaper', size: 'Ukuran', light: 'Terang', dark: 'Gelap',
-        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘', tilt_diag: 'Diagonal', facet: 'Ukuran Faset', angle: 'Sudut', ang_bottom: 'Bawah', ang_top: 'Atas', ang_diag: 'Diagonal', ang_side: 'Samping', shape: 'Gelombang', shp_landai: 'Landai', shp_ombak: 'Ombak', shp_tajam: 'Tajam', shp_undak: 'Undak', shp_lembaran: 'Lembaran',
+        layer: 'Layer', tilt: 'Kemiringan', tilt_up: 'Miring ↗', tilt_flat: 'Datar', tilt_down: 'Miring ↘', tilt_diag: 'Diagonal', facet: 'Ukuran Faset', angle: 'Sudut', ang_bottom: 'Bawah', ang_top: 'Atas', ang_diag: 'Diagonal', ang_side: 'Samping', shape: 'Gelombang', shp_landai: 'Landai', shp_ombak: 'Ombak', shp_tajam: 'Tajam', shp_lembaran: 'Lembaran',
  grv_tegak: 'Tegak', grv_miring: 'Miring', grv_datar: 'Datar', grv_miring2: 'Miring Balik',
+ gw_gelombang: 'Bergelombang', gw_lurus: 'Lurus',
+ gstyle: 'Gaya Gradasi', gs_halus: 'Halus', gs_acak: 'Acak Halus',
         layer_color: 'Warna Layer', direction: 'Arah', dir_fwd: 'Terang → Gelap', dir_rev: 'Gelap → Terang',
         contrast: 'Kontras', soft: 'Halus', normal: 'Normal', bold: 'Tegas',
         use_custom: 'Pakai custom', shuffle: 'Acak', download: 'Unduh PNG',
         footer: 'Gratis selamanya · Tanpa akun · 100% di browser' },
   en: { pattern: 'Pattern', palette: 'Palette', mode: 'Wallpaper Mode', size: 'Size', light: 'Light', dark: 'Dark',
-        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘', tilt_diag: 'Diagonal', facet: 'Facet Size', angle: 'Angle', ang_bottom: 'Bottom', ang_top: 'Top', ang_diag: 'Diagonal', ang_side: 'Side', shape: 'Waveform', shp_landai: 'Gentle', shp_ombak: 'Wavy', shp_tajam: 'Sharp', shp_undak: 'Stepped', shp_lembaran: 'Sheets',
+        layer: 'Layer', tilt: 'Tilt', tilt_up: 'Tilt ↗', tilt_flat: 'Flat', tilt_down: 'Tilt ↘', tilt_diag: 'Diagonal', facet: 'Facet Size', angle: 'Angle', ang_bottom: 'Bottom', ang_top: 'Top', ang_diag: 'Diagonal', ang_side: 'Side', shape: 'Waveform', shp_landai: 'Gentle', shp_ombak: 'Wavy', shp_tajam: 'Sharp', shp_lembaran: 'Sheets',
  grv_tegak: 'Upright', grv_miring: 'Tilted', grv_datar: 'Flat', grv_miring2: 'Tilted Flip',
+ gw_gelombang: 'Wavy', gw_lurus: 'Straight',
+ gstyle: 'Gradient Style', gs_halus: 'Smooth', gs_acak: 'Smooth Random',
         layer_color: 'Layer Colors', direction: 'Direction', dir_fwd: 'Light → Dark', dir_rev: 'Dark → Light',
         contrast: 'Contrast', soft: 'Soft', normal: 'Normal', bold: 'Bold',
         use_custom: 'Use custom', shuffle: 'Shuffle', download: 'Download PNG',
@@ -451,9 +475,12 @@ let state = {
   waveDiagAng: -0.72,   // diagonal angle (rad), calibrated vs the reference look
   polyScale: 1,         // poly only: facet size multiplier (0.5 = fine, 2 = chunky)
   duneAngle: 'bottom',  // dunes only: bottom | top | diag | side viewpoint
-  duneShape: 'landai',  // dunes only: landai | ombak | tajam | undak | lembaran waveform
+  duneShape: 'landai',  // dunes only: landai | ombak | tajam | lembaran waveform
   grooveAngle: 'tegak', // groove only: tegak | miring | datar | miring2 frame rotation
-  grooveLines: 8        // groove only: stripe count 4–16
+  grooveLines: 8,       // groove only: stripe count 4–16
+  grooveContrast: 'bold', // groove only: soft | normal | bold gradient strength
+  grooveWave: 'gelombang', // groove only: gelombang (wavy) | lurus (straight bands)
+  gradientStyle: 'halus' // gradient only: halus (classic) | acak (smooth random wash)
 };
 
 // seeded RNG (mulberry32)
@@ -734,21 +761,29 @@ function paintGroove(ctx, W, H, c, R) {
   // together; their count comes from the Lines slider.
   const ramp = colorRamp(c);
   const bands = state.grooveLines, bw = W / bands, S = 64;
-  const amp = bw * (0.42 + R() * 0.15);
   const cycles = 5.2 + R() * 1.6;
+  // Amplitude locked to the vertical wavelength — the bump keeps its shape
+  // no matter how few or many stripes are drawn (never stretched by width).
+  // 'lurus' mode kills the wiggle entirely: perfectly straight bands.
+  const amp = state.grooveWave === 'lurus' ? 0 : (H / cycles) * (0.17 + R() * 0.05);
   const phase = R() * Math.PI * 2;
-  const lean = -(0.22 + R() * 0.18) * W;
+  // No built-in lean: upright means truly upright — slant only ever comes
+  // from the Angle control rotating the whole frame
+  const lean = 0;
   const edgeX = (i, y) => i * bw + amp * Math.sin((y / H) * Math.PI * 2 * cycles + phase) + lean * (y / H);
   ctx.fillStyle = ramp(0.5); ctx.fillRect(0, 0, W, H);
-  const cover = Math.ceil(Math.abs(lean) / bw) + 1;
+  const cover = Math.ceil((Math.abs(lean) + amp) / bw) + 1;
   const total = bands + cover * 2;
   for (let i = -cover; i < bands + cover; i++) {
     ctx.beginPath();
     for (let s = 0; s <= S; s++) { const y = (s / S) * (H + 8) - 4; const x = edgeX(i, y); s ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     for (let s = S; s >= 0; s--) { const y = (s / S) * (H + 8) - 4; ctx.lineTo(edgeX(i + 1, y), y); }
     ctx.closePath();
-    const tone = (i + cover) / (total - 1);
-    ctx.fillStyle = ramp(0.04 + tone * 0.92);
+    // Gradient strength is the user's Contrast choice: soft keeps a narrow
+    // mid-range sweep, bold runs the full ramp with a deep-dark curve
+    const GC = { soft: [0.14, 0.86, 1.0], normal: [0.03, 0.97, 1.25], bold: [0, 1, 1.7] }[state.grooveContrast];
+    const tone = GC[0] + (GC[1] - GC[0]) * Math.pow((i + cover) / (total - 1), GC[2]);
+    ctx.fillStyle = ramp(tone);
     ctx.fill();
   }
 }
@@ -847,7 +882,6 @@ function paintDunes(ctx, W, H, c, R) {
       } else {
         const f = N.fbm1(nx * freq + nOff, 3) - 0.47;
         y = baseY + f * 2 * amp + (nx - 0.5) * tilt;
-        if (shape === 'undak') { const q = H * 0.02; y = Math.round(y / q) * q; } // terraced steps
       }
       ctx.lineTo(x, y);
     }
@@ -866,9 +900,21 @@ function drawGradient(ctx, W, H, c, R) {
   const x1 = W / 2 - Math.cos(angle) * W / 2, y1 = H / 2 - Math.sin(angle) * H / 2;
   const x2 = W / 2 + Math.cos(angle) * W / 2, y2 = H / 2 + Math.sin(angle) * H / 2;
   const g = ctx.createLinearGradient(x1, y1, x2, y2);
-  const stops = [c[0], c[1], c[2], c[0]];
-  const n = 2 + Math.floor(R() * 2);
-  for (let i = 0; i <= n; i++) g.addColorStop(i / n, stops[i % stops.length]);
+  if (state.gradientStyle === 'acak') {
+    // Smooth Random: 5-6 tones sampled along the ramp in random order,
+    // positions stratified (one jittered stop per slice) so two stops can
+    // never bunch into a hard crease — every shuffle a different soft wash
+    const ramp = colorRamp(c);
+    const n = 5 + Math.floor(R() * 2);
+    for (let i = 0; i < n; i++) {
+      const at = i === 0 ? 0 : i === n - 1 ? 1 : (i + 0.2 + R() * 0.6) / n;
+      g.addColorStop(at, ramp(R()));
+    }
+  } else {
+    const stops = [c[0], c[1], c[2], c[0]];
+    const n = 2 + Math.floor(R() * 2);
+    for (let i = 0; i <= n; i++) g.addColorStop(i / n, stops[i % stops.length]);
+  }
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   // soft vignette
   const v = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.3, W/2, H/2, Math.hypot(W,H)*0.7);
@@ -961,6 +1007,7 @@ function updateLayerCtl() {
   document.getElementById('polyCtl').style.display = state.pattern === 'poly' ? '' : 'none';
   document.getElementById('duneCtl').style.display = state.pattern === 'dunes' ? '' : 'none';
   document.getElementById('grooveCtl').style.display = state.pattern === 'groove' ? '' : 'none';
+  document.getElementById('gradientCtl').style.display = state.pattern === 'gradient' ? '' : 'none';
   document.getElementById('tiltCtl').style.display = isWaves ? '' : 'none';
   const range = document.getElementById('layerRange');
   if (isWaves) { range.min = 3; range.max = 14; range.value = state.wavesLayers; }
@@ -971,6 +1018,27 @@ document.querySelectorAll('#grooveAngleSeg button').forEach(b => {
   b.onclick = () => {
     state.grooveAngle = b.dataset.gangle;
     document.querySelectorAll('#grooveAngleSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
+document.querySelectorAll('#gradientSeg button').forEach(b => {
+  b.onclick = () => {
+    state.gradientStyle = b.dataset.gstyle;
+    document.querySelectorAll('#gradientSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
+document.querySelectorAll('#grooveWaveSeg button').forEach(b => {
+  b.onclick = () => {
+    state.grooveWave = b.dataset.gwave;
+    document.querySelectorAll('#grooveWaveSeg button').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  };
+});
+document.querySelectorAll('#grooveContrastSeg button').forEach(b => {
+  b.onclick = () => {
+    state.grooveContrast = b.dataset.gcontrast;
+    document.querySelectorAll('#grooveContrastSeg button').forEach(x => x.classList.toggle('active', x === b));
     render();
   };
 });
